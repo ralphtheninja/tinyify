@@ -29,7 +29,8 @@ module.exports = function (b, opts) {
 
   opts = Object.assign({
     flat: true,
-    env: {}
+    env: {},
+    ecmaVersion: 10
   }, opts)
 
   var env = Object.assign({
@@ -54,7 +55,7 @@ module.exports = function (b, opts) {
   if (!b._options.fullPaths) {
     if (opts.flat) {
       // Output a flat bundle, without function wrappers for each module.
-      b.plugin(packFlat)
+      b.plugin(packFlat, { ecmaVersion: opts.ecmaVersion })
     } else {
       // Replace file paths in require() calls with module IDs.
       b.plugin(collapser)
@@ -62,7 +63,7 @@ module.exports = function (b, opts) {
   }
 
   // Remove unused exports from modules.
-  b.plugin(commonShake)
+  b.plugin(commonShake, { ecmaVersion: opts.ecmaVersion })
 
   // Minify the final output.
   var uglifyOpts = makeUglifyOptions(b._options.debug)
